@@ -5,6 +5,7 @@ NULLABLE = {'blank': True, 'null': True}
 
 
 class User(AbstractUser):
+    """Model description"""
     telegram = models.CharField(max_length=200, verbose_name='Телеграмм')
     chat_id = models.CharField(max_length=300, default=None, **NULLABLE, verbose_name='Чат Айди')
 
