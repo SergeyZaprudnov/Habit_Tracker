@@ -86,12 +86,12 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('BASE_NAME'),
-        'USER': os.getenv('BASE_USER'),
-        'PASSWORD': os.getenv('BASE_PASSWORD'),
-        'HOST': os.getenv('BASE_HOST'),
-        'PORT': os.getenv('BASE_PORT'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'H_T',
+        'USER': 'postgres',
+        'PASSWORD': 'sixteen',
+        'HOST': 'localhost',
+        'PORT': 5432,
     }
 }
 
@@ -145,7 +145,7 @@ REST_FRAMEWORK = {
 }
 
 # настройки Telegram
-TELEGRAM_API_KEY = os.getenv('TELEGRAM_API_KEY')
+TELEGRAM_API_KEY = os.getenv('API_KEY')
 
 # настройки Сelery
 CELERY_BROKER_URL = 'redis://redis:6379/0'
