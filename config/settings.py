@@ -10,16 +10,16 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
+from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
-env_path = Path('.')/'.env'
+env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -32,7 +32,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,6 +41,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "django_celery_beat",
+    "corsheaders",
+    "drf_yasg",
     "habits",
     "users",
 ]
@@ -54,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -76,7 +81,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -88,9 +92,8 @@ DATABASES = {
         'PASSWORD': os.getenv('BASE_PASSWORD'),
         'HOST': os.getenv('BASE_HOST'),
         'PORT': os.getenv('BASE_PORT'),
-        }
+    }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -110,11 +113,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "ru-RU"
 
 TIME_ZONE = "UTC"
 
@@ -122,11 +124,11 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = "/static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -134,3 +136,39 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = 'users.User'
+
+# настройки  JWT
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
+# настройки Telegram
+TELEGRAM_API_KEY = os.getenv('TELEGRAM_API_KEY')
+
+# настройки Сelery
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_TIMEZONE = 'Europe/Moscow'
+
+CELERY_BEAT_SCHEDULE = {
+    'get_chat_id': {
+        'task': 'apps.habits.tasks.get_chat_id',
+        'schedule': timedelta(minutes=1)
+    },
+    'send_telegram_message': {
+        'task': 'apps.habits.tasks.send_telegram_message',
+        'schedule': timedelta(minutes=1)
+    }
+}
+
+# настройки Сors
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8000',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+]
+
+CORS_ALLOW_ALL_ORIGINS = False
