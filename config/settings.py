@@ -86,12 +86,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'H_T',
-        'USER': 'postgres',
-        'PASSWORD': 'sixteen',
-        'HOST': 'localhost',
-        'PORT': 5432,
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('BASE_NAME'),
+        'USER': os.getenv('BASE_USER'),
+        'PASSWORD': os.getenv('BASE_PASSWORD'),
+        'HOST': 'db',
     }
 }
 
@@ -153,11 +152,11 @@ CELERY_TIMEZONE = 'Europe/Moscow'
 
 CELERY_BEAT_SCHEDULE = {
     'get_chat_id': {
-        'task': 'apps.habits.tasks.get_chat_id',
+        'task': 'habits.tasks.get_chat_id',
         'schedule': timedelta(minutes=1)
     },
     'send_telegram_message': {
-        'task': 'apps.habits.tasks.send_telegram_message',
+        'task': 'habits.tasks.send_telegram_message',
         'schedule': timedelta(minutes=1)
     }
 }
